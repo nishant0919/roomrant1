@@ -1,0 +1,52 @@
+import { Mongoose, models, model } from "mongoose";
+import { Schema } from "mongoose";
+
+const roomSchema = new Schema(
+  {
+    image: {
+      type: String,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    rent: {
+      type: Number,
+      required: true,
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    features: {
+      type: [String],
+    },
+    booked: {
+      type: Boolean,
+      default: false,
+    },
+    bookedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    bookedAt: {
+      type: Date,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Room = models.Room || model("Room", roomSchema);
+
+export default Room;
