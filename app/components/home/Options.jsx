@@ -1,6 +1,9 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Options = () => {
+  const router = useRouter();
   return (
     <div
       className="flex md:flex-row flex-col gap-10 p-5 px-16 h-[38vh]
@@ -15,6 +18,7 @@ const Options = () => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
+        onClick={() => router.push("/rooms")}
       >
         <button className="   px-16 py-4 rounded-md bg-black flex justify-center items-center text-white hover:bg-white hover:text-black hover:duration-200">
           + List a place

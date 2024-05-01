@@ -1,12 +1,19 @@
-import React from "react";
+"use client";
+import { useRouter } from "next/navigation";
 
 function Landing() {
+  const router = useRouter();
+  function searchData(e) {
+    router.push("/search/" + e);
+  }
   return (
     <section className="dark:bg-gray-100 w-full dark:text-gray-800 h-[80vh]  p-8">
-      <div className="flex flex-col justify-center lg:flex-row lg:justify-between">
+      <div className="flex flex-col justify-center h-full items-center lg:flex-row lg:justify-between">
         <div
           className="flex flex-col justify-center text-center rounded-sm 
         lg:w-1/2
+        w-full
+        h-full
         lg:text-left"
         >
           <h1 className="text-5xl font-bold leading-none sm:text-6xl">
@@ -20,6 +27,11 @@ function Landing() {
           <div className="flex flex-col space-y-4 sm:items-center sm:justify-center sm:flex-row sm:space-y-0 sm:space-x-4 lg:justify-start">
             <input
               type="text"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  searchData(e.target.value);
+                }
+              }}
               placeholder="Enter an address"
               className="p-5 w-full rounded-md border border-black outline-none shadow-md"
             />
