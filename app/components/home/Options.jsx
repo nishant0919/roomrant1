@@ -18,7 +18,7 @@ const Options = () => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
-        onClick={() => router.push("/rooms")}
+        onClick={() => router.push("/add")}
       >
         <button className="   px-16 py-4 rounded-md bg-black flex justify-center items-center text-white hover:bg-white hover:text-black hover:duration-200">
           + List a place
@@ -33,6 +33,8 @@ const Options = () => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
+        onClick={() => router.push("/search")}
+
       >
         <button className="  px-16 py-4 rounded-md bg-black flex justify-center items-center text-white hover:bg-white hover:text-black hover:duration-200">
           + Find rooms
