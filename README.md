@@ -12,7 +12,7 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 This project uses [`next/font`](https://nextjs.asic-features/font-optimization) to timize and load Inter, a custom Google 
 ## Le
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about Next.js, take a look at the foll
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js feat
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.j
