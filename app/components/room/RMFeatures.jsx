@@ -4,7 +4,7 @@ function RMFeatures({ data }) {
   return (
     <div className="w-full">
       <h2 className="text-xl font-bold mb-2">Features</h2>
-      {/* make a table  */}
+      
       <table className="table-auto w-full">
         <tbody>
           <tr>
