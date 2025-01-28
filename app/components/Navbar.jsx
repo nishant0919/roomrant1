@@ -7,7 +7,7 @@ import { signOut, useSession } from "next-auth/react";
 function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
-
+//!(
   if (status === "loading") return null;
 
   return (
