@@ -22,7 +22,7 @@ const Cards = ({ data }) => {
           </p>
 
           <p className="text-xl font-bold text-white sm:text-2xl">
-            {data.author.name}
+            {data.author?.name}
           </p>
 
           <div className="mt-32 sm:mt-48 lg:mt-64">

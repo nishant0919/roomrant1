@@ -13,7 +13,7 @@ function RMFeatures({ data }) {
           </tr>
           <tr>
             <td className="border px-4 py-2">Rent (Per Month)</td>
-            <td className="border px-4 py-2">${data.rent}</td>
+            <td className="border px-4 py-2">Rs.{data.rent}</td>
           </tr>
           {data.features.map((feature, index) => (
             <tr key={index}>

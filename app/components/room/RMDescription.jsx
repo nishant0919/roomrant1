@@ -10,12 +10,13 @@ function RMDescription({ router, data, user, id, booked, setActive }) {
   const isAuth = status === "authenticated";
 
   const checkifBookedByUser = () => {
-    return booked.find((book) => book.user.email === user.email);
+    // Use optional chaining to avoid issues if `booked` or `user` is undefined
+    return booked?.find((book) => book?.user?.email === user?.email);
   };
 
   function bookNow() {
     setBookLoading(true);
-    fetch("/api/booked/" + id)
+    fetch(`/api/booked/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === 200) {
@@ -26,56 +27,69 @@ function RMDescription({ router, data, user, id, booked, setActive }) {
           setBookLoading(false);
           alert("Error Booking Room");
         }
+      })
+      .catch((err) => {
+        console.error("Error booking the room:", err);
+        setBookLoading(false);
+        alert("Error Booking Room");
       });
   }
 
   function unBookNow() {
     setUnbookLoading(true);
-    fetch("/api/umbook/" + id)
+    fetch(`/api/umbook/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === 200) {
           setUnbookLoading(false);
-          alert("Room unbooked Successfully");
+          alert("Room Unbooked Successfully");
           router.refresh();
         } else {
           setUnbookLoading(false);
-          alert("Error Booking Room");
+          alert("Error Unbooking Room");
         }
+      })
+      .catch((err) => {
+        console.error("Error unbooking the room:", err);
+        setUnbookLoading(false);
+        alert("Error Unbooking Room");
       });
   }
+
   return (
     <motion.div
-      className="p-2 flex flex-col gap-2 "
+      className="p-2 flex flex-col gap-2"
       initial={{ x: 200, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 200, opacity: 0 }}
     >
       <p>
-        <span className="font-semibold">Description:</span> {data.description}
+        <span className="font-semibold">Description:</span>{" "}
+        {data?.description || "No description available."}
       </p>
       <RMFeatures data={data} />
-      {/* location */}
+      {/* Location */}
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-bold">Location</h3>
         <div className="flex flex-col gap-2">
           <p>
-            <span className="font-semibold">Address:</span> {data.location}
+            <span className="font-semibold">Address:</span>{" "}
+            {data?.location || "No location provided."}
           </p>
         </div>
-        {/* book now buttom */}
+        {/* Book Now Button */}
         {isAuth ? (
           <div className="flex w-full">
-            {(user.email !== data.author.email && (
+            {(user?.email !== data?.author?.email && (
               <div className="flex w-full flex-col">
-                {(!checkifBookedByUser() && (
+                {!checkifBookedByUser() ? (
                   <button
                     onClick={bookNow}
                     className="bg-purple-600 mt-5 w-full hover:bg-purple-700 duration-300 text-white py-2 rounded-md"
                   >
                     {bookLoading ? "Booking..." : "Book Now"}
                   </button>
-                )) || (
+                ) : (
                   <button
                     className="bg-green-600 mt-5 w-full hover:bg-green-700 duration-300 text-white py-2 rounded-md"
                     disabled
@@ -83,7 +97,6 @@ function RMDescription({ router, data, user, id, booked, setActive }) {
                     Already Booked by You
                   </button>
                 )}
-
                 {checkifBookedByUser() && (
                   <button
                     onClick={unBookNow}
@@ -104,7 +117,7 @@ function RMDescription({ router, data, user, id, booked, setActive }) {
           </div>
         ) : (
           <button
-            onClick={(e) => router.push("/login")}
+            onClick={() => router.push("/login")}
             className="bg-purple-600 mt-5 hover:bg-purple-700 duration-300 text-white py-2 rounded-md"
           >
             Login to Book
