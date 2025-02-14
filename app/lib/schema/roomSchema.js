@@ -6,6 +6,10 @@ const roomSchema = new Schema(
     image: {
       type: String,
     },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
     description: {
       type: String,
       required: true,

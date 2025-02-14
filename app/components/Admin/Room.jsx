@@ -27,6 +27,8 @@ function AdminRoomPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const [changeStatusLoaidng, setChangeStatusLoaidng] = useState(false);
+
   useEffect(() => {
     const getRooms = async () => {
       setLoading(true);
@@ -45,6 +47,31 @@ function AdminRoomPage() {
     getRooms();
   }, []);
 
+  const changeApproved = async (id) => {
+    setChangeStatusLoaidng(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/room/${id}/approved`,
+        {
+          method: "PUT",
+        }
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(
+          errorData.message || `HTTP error! status: ${res.status}`
+        );
+      }
+      const data = await res.json();
+      console.log("Approved Room:", data);
+      router.refresh();
+    } catch (error) {
+      console.error("Error approving room:", error);
+    } finally {
+      setChangeStatusLoaidng(false);
+    }
+  };
+
   const openModal = (room) => {
     setSelectedRoom(room);
     setIsModalOpen(true);
@@ -53,7 +80,6 @@ function AdminRoomPage() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
 
   if (loading) {
     return <div className="text-center mt-10">Loading rooms...</div>;
@@ -72,7 +98,11 @@ function AdminRoomPage() {
   }
 
   if (rooms.length === 0) {
-    return <div className="text-center mt-10">No rooms found. Please add a room.</div>;
+    return (
+      <div className="text-center mt-10">
+        No rooms found. Please add a room.
+      </div>
+    );
   }
 
   return (
@@ -114,16 +144,27 @@ function AdminRoomPage() {
               </div>
               <div className="flex items-center mt-2 text-sm text-gray-500">
                 <FaUser className="mr-1" />
-                <span>Posted by: {room.author?.name}</span> {/* Display author name */}
+                <span>Posted by: {room.author?.name}</span>{" "}
+                {/* Display author name */}
               </div>
               <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() => changeApproved(room._id)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
+                >
+                  {changeStatusLoaidng
+                    ? "Loading..."
+                    : room.approved
+                    ? "Approved"
+                    : "Approve"}
+                </button>
+
                 <button
                   onClick={() => openModal(room)}
                   className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
                 >
                   View Details
                 </button>
-               
               </div>
             </div>
           </div>
@@ -151,10 +192,12 @@ function AdminRoomPage() {
             />
             <p className="text-gray-600">{selectedRoom.description}</p>
             <p className="text-lg font-semibold mt-2">
-              Price: <span className="text-gray-500">Rs.{selectedRoom.rent}</span>
+              Price:{" "}
+              <span className="text-gray-500">Rs.{selectedRoom.rent}</span>
             </p>
             <p className="text-lg font-semibold mt-2">
-              Location: <span className="text-gray-500">{selectedRoom.location}</span>
+              Location:{" "}
+              <span className="text-gray-500">{selectedRoom.location}</span>
             </p>
             <div className="mt-2">
               <strong>Features:</strong>

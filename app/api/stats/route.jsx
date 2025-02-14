@@ -8,7 +8,7 @@ export async function GET(request, { params }) {
 
   const user = await User.find();
   try {
-    const rooms = await Room.find().sort({ createdAt: -1 });
+    const rooms = await Room.find({ approved: true }).sort({ createdAt: -1 });
     const booked = await Booked.find();
     const stats = {
       rooms: rooms.length,

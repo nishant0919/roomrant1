@@ -24,6 +24,10 @@ const userSchema = new Schema(
     phone: {
       type: Number,
     },
+    role: {
+      type: String,
+      default: "user",
+    },
     gender: {
       type: String,
     },

@@ -21,9 +21,12 @@ function RecentCards({ data }) {
         p-4
       "
       >
-        {data.slice(0, 6).map((room, index) => (
-          <Cards key={index} data={room} />
-        ))}
+        {data
+          .slice(0, 6)
+          .map(
+            (room, index) =>
+              room.approved === true && <Cards key={index} data={room} />
+          )}
       </div>
     </div>
   );
