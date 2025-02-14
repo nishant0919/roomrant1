@@ -1,14 +1,31 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect } from "react"; // Importing useState and useEffect
 import { SiRoadmapdotsh } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
+import { usePathname } from "next/navigation"; // Import usePathname to get the current path
 
 function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
-//!(
+
+  // Early return for loading state
   if (status === "loading") return null;
+
+  const [hideNavbar, setHideNavbar] = useState(false);
+  const path = usePathname(); // Use usePathname to get the current path
+
+  useEffect(() => {
+    if (path.includes("/admin")) {
+      setHideNavbar(true);
+    } else {
+      setHideNavbar(false);
+    }
+  }, [path]);
+
+  if (hideNavbar) {
+    return null;
+  }
 
   return (
     <header className="p-4 dark:bg-gray-100 dark:text-gray-800">
@@ -35,8 +52,7 @@ function Navbar() {
           <div className="items-center flex-shrink-0 gap-4 hidden lg:flex">
             <Link href={"/add"}>
               <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                {" "}
-                + Add room
+                {" "} + Add room
               </button>
             </Link>
             <Link
