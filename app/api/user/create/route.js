@@ -12,13 +12,13 @@ export async function POST(request) {
   const email = session.user.email;
 
   const checkUser = await User.findOne({ email });
-  if (checkUser) {
+  if (!!checkUser) {
     return Response.json({ message: "exist" });
   } else {
     // generate username
     let username = email.split("@")[0];
     const checkUsername = await User.findOne({ username });
-    if (checkUsername) {
+    if (!!checkUsername) {
       username = username + Math.floor(Math.random() * 1000);
     }
     const name = session.user.name;

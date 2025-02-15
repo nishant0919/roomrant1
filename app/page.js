@@ -1,6 +1,5 @@
 import Footer from "./components/home/Footer";
 import Landing from "./components/home/Landing";
-import Options from "./components/home/Options";
 import RecentCards from "./components/home/RecentCards";
 import Stats from "./components/home/Stats";
 
@@ -37,7 +36,6 @@ export default async function Home() {
   return (
     <div>
       <Landing />
-      <Options />
       {data.status == 200 && <RecentCards data={data.body} />}
       {stats.status == 200 && <Stats data={stats.body} />}
       <Footer />

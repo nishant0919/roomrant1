@@ -1,22 +1,38 @@
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react"; // Importing useState and useEffect
+import React, { useState, useEffect } from "react";
 import { SiRoadmapdotsh } from "react-icons/si";
 import { signOut, useSession } from "next-auth/react";
-import { usePathname } from "next/navigation"; // Import usePathname to get the current path
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
+  const [role, setRole] = useState(null);
 
-  // Early return for loading state
   if (status === "loading") return null;
 
+  async function fetchRole() {
+    const res = await fetch("/api/user/role");
+    const data = await res.json();
+    setRole(data.role);
+  }
+
+  useEffect(() => {
+    if (auth) {
+      fetchRole();
+    }
+  }, [auth]);
+
   const [hideNavbar, setHideNavbar] = useState(false);
-  const path = usePathname(); // Use usePathname to get the current path
+  const path = usePathname();
 
   useEffect(() => {
     if (path.includes("/admin")) {
+      if (role !== "admin") {
+        setHideNavbar(true);
+        return;
+      }
       setHideNavbar(true);
     } else {
       setHideNavbar(false);
@@ -50,11 +66,20 @@ function Navbar() {
           </div>
         )) || (
           <div className="items-center flex-shrink-0 gap-4 hidden lg:flex">
-            <Link href={"/add"}>
-              <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                {" "} + Add room
-              </button>
-            </Link>
+            {(role === "user" && (
+              <Link href={"/add"}>
+                <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
+                  {" "}
+                  + Add room
+                </button>
+              </Link>
+            )) || (
+              <Link href={"/admin"}>
+                <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
+                  Admin
+                </button>
+              </Link>
+            )}
             <Link
               href={"/user"}
               className="flex items-center p-2"

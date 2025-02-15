@@ -6,6 +6,7 @@ export async function GET(request, { params }) {
   try {
     const rooms = await Room.find({
       booked: false,
+      approved: true,
     })
       .populate("author", "name")
       .sort({ createdAt: -1 });
