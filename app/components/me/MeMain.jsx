@@ -8,6 +8,7 @@ function MeMain() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const navigate = useRouter();
+
   async function fetchMe() {
     const response = await fetch("/api/me");
     const data = await response.json();
@@ -15,152 +16,136 @@ function MeMain() {
       setData(data.body);
       setLoading(false);
     } else {
-      alert("Error fetching data");
       navigate.push("/");
-      return alert("Error fetching data");
+      alert("Error fetching data");
     }
   }
 
-  function navTo(e) {
-    navigate.push("/room/" + e);
+  function navTo(id) {
+    navigate.push(`/room/${id}`);
   }
 
   useEffect(() => {
     fetchMe();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-500"></div>
+      </div>
+    );
+
   return (
-    <div className="p-16">
-      <div className="p-8 bg-white shadow mt-24">
-        {" "}
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          {" "}
-          <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
-            {" "}
-            <div>
-              {" "}
-              <p className="font-bold text-gray-700 text-xl">
-                {data.rooms.length}
-              </p>{" "}
-              <p className="text-gray-400">Room Posted</p>{" "}
-            </div>{" "}
-            <div>
-              {" "}
-              <p className="font-bold text-gray-700 text-xl">
-                {data.booked.length}
-              </p>{" "}
-              <p className="text-gray-400">Room Booked</p>{" "}
-            </div>{" "}
-          </div>{" "}
+    <div className="p-10">
+      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
+        {/* Profile Section */}
+        <div className="flex flex-col items-center">
           <div className="relative">
-            {" "}
-            <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-              <img
-                src={data.user.image}
-                alt="profile"
-                className="w-48 h-48 rounded-full"
-                referrerPolicy="no-referrer"
-              />
-            </div>{" "}
-          </div>{" "}
-          <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-            <button
-              onClick={signOut}
-              className="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-            >
-              {" "}
-              LogOut
-            </button>{" "}
+            <img
+              src={data.user.image}
+              alt="Profile"
+              className="w-40 h-40 rounded-full shadow-lg"
+              referrerPolicy="no-referrer"
+            />
           </div>
-        </div>{" "}
-        <div className="mt-20 text-center border-b pb-12">
-          {" "}
-          <h1 className="text-4xl font-medium text-gray-700">
+          <h1 className="text-3xl font-semibold text-gray-700 mt-4">
             {data.user.name}
-          </h1>{" "}
-          <p className="font-light text-gray-600 mt-3">{data.user.email}</p>{" "}
-          <p className="mt-8 text-gray-500">@{data.user.username} </p>{" "}
-        </div>{" "}
-        {data.rooms.length !== 0 && (
-          <div className="flex pt-5 flex-col gap-3">
-            <h2 className="text-2xl font-bold">Room Posted</h2>
-            <div
-              className="grid 
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-3
-          gap-3
-          "
-            >
-              {data.rooms.map((room, index) => (
+          </h1>
+          <p className="text-gray-500">{data.user.email}</p>
+          <p className="mt-2 text-gray-500">@{data.user.username}</p>
+
+          <button
+            onClick={signOut}
+            className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition"
+          >
+            Log Out
+          </button>
+        </div>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 text-center">
+          <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <p className="text-xl font-bold text-indigo-600">
+              {data.rooms.length}
+            </p>
+            <p className="text-gray-600">Rooms Posted</p>
+          </div>
+          <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <p className="text-xl font-bold text-indigo-600">
+              {data.booked.length}
+            </p>
+            <p className="text-gray-600">Rooms Booked</p>
+          </div>
+        </div>
+
+        {/* Rooms Section */}
+        {data.rooms.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold">Rooms Posted</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {data.rooms.map((room) => (
                 <div
-                  onClick={() => {
-                    navTo(room._id);
-                  }}
-                  key={index}
-                  className="bg-white shadow rounded-md p-4"
+                  key={room._id}
+                  onClick={() => navTo(room._id)}
+                  className="cursor-pointer bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105"
                 >
                   <img
                     src={room.image}
-                    alt=""
-                    className="w-full h-48 object-cover rounded-md"
+                    alt="Room"
+                    className="w-full h-48 object-cover"
                   />
-                  <h2 className="text-lg font-bold mt-2">
-                    {room.location.length > 20
-                      ? room.location.slice(0, 20) + "..."
-                      : room.location}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    {room.description.length > 40
-                      ? room.description.slice(0, 40) + "..."
-                      : room.description}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Posted On : {moment(room.createdAt).fromNow()}
-                  </p>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      {room.location.length > 20
+                        ? room.location.slice(0, 20) + "..."
+                        : room.location}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {room.description.length > 40
+                        ? room.description.slice(0, 40) + "..."
+                        : room.description}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Posted {moment(room.createdAt).fromNow()}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
-        {data.booked.length !== 0 && (
-          <div className="flex pt-5 flex-col gap-3">
-            <h2 className="text-2xl font-bold">Room Posted</h2>
-            <div
-              className="grid 
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-3
-          gap-3
-          "
-            >
-              {data.booked.map((book, index) => (
+
+        {data.booked.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold">Rooms Booked</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {data.booked.map((book) => (
                 <div
-                  onClick={() => {
-                    navTo(book.room._id);
-                  }}
-                  key={index}
-                  className="bg-white shadow rounded-md p-4"
+                  key={book.room._id}
+                  onClick={() => navTo(book.room._id)}
+                  className="cursor-pointer bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105"
                 >
                   <img
                     src={book.room.image}
-                    alt=""
-                    className="w-full h-48 object-cover rounded-md"
+                    alt="Room"
+                    className="w-full h-48 object-cover"
                   />
-                  <h2 className="text-lg font-bold mt-2">
-                    {book.room.location.length > 20
-                      ? book.room.location.slice(0, 20) + "..."
-                      : book.room.location}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    {book.room.description.length > 40
-                      ? book.room.description.slice(0, 40) + "..."
-                      : book.room.description}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Booked On : {moment(book.createdAt).fromNow()}
-                  </p>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      {book.room.location.length > 20
+                        ? book.room.location.slice(0, 20) + "..."
+                        : book.room.location}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {book.room.description.length > 40
+                        ? book.room.description.slice(0, 40) + "..."
+                        : book.room.description}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Booked {moment(book.createdAt).fromNow()}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

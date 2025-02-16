@@ -223,7 +223,7 @@ function AddMain() {
                 id="rent"
                 onChange={(e) => handleChange(e)}
                 name="rent"
-                placeholder="eg. $10000"
+                placeholder="eg. Rs.2000"
                 className="p-2 border border-gray-300 rounded-md"
               />
             </div>

@@ -23,7 +23,7 @@ function page() {
       });
   }
   useEffect(() => {
-    createuser();
+    if (status === "authenticated") createuser();
   }, []);
 
   return <div>Loading</div>;

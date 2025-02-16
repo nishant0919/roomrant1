@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { FaBed, FaTag, FaMapMarkerAlt, FaUser } from "react-icons/fa";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 async function fetchRooms() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/room`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/room/admin`);
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
@@ -35,7 +34,6 @@ function AdminRoomPage() {
       setError(null);
       try {
         const data = await fetchRooms();
-        console.log("Fetched Rooms:", data);
         setRooms(data.body);
       } catch (err) {
         setError(err.message);

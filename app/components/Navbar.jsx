@@ -9,6 +9,7 @@ function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
   const [role, setRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   if (status === "loading") return null;
 
@@ -16,6 +17,7 @@ function Navbar() {
     const res = await fetch("/api/user/role");
     const data = await res.json();
     setRole(data.role);
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -66,19 +68,28 @@ function Navbar() {
           </div>
         )) || (
           <div className="items-center flex-shrink-0 gap-4 hidden lg:flex">
-            {(role === "user" && (
-              <Link href={"/add"}>
-                <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                  {" "}
-                  + Add room
-                </button>
-              </Link>
+            {(!isLoading && (
+              <div className="flex">
+                {(role === "user" && (
+                  <Link href={"/add"}>
+                    <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
+                      {" "}
+                      + Add room
+                    </button>
+                  </Link>
+                )) || (
+                  <Link href={"/admin"}>
+                    <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
+                      Admin
+                    </button>
+                  </Link>
+                )}
+              </div>
             )) || (
-              <Link href={"/admin"}>
-                <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                  Admin
-                </button>
-              </Link>
+              <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
+                {" "}
+                Loading...
+              </button>
             )}
             <Link
               href={"/user"}

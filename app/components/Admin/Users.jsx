@@ -12,7 +12,11 @@ export default function UserDetail() {
       try {
         const response = await fetch("/api/user/all");
         const res = await response.json();
-        setUsers(res.users);
+        const users = res.users;
+        const uniqueUser = users.filter(
+          (v, i, a) => a.findIndex((t) => t.email === v.email) === i
+        );
+        setUsers(uniqueUser);
         setLoading(false);
       } catch (error) {
         setError(error);
