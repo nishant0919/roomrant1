@@ -12,6 +12,7 @@ export async function GET(response, { params }) {
         { location: { $regex: query, $options: "i" } }, // Search in location field
         { type: { $regex: query, $options: "i" } },
       ],
+      approved: true, // Ensure the room is approved
     });
 
     return Response.json({ status: 200, body: rooms });

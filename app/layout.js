@@ -10,7 +10,7 @@ import NextTopLoader from "nextjs-toploader";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Room4Rent | Home",
+  title: "QuickRoom | Home",
   description: "Find your next room to rent",
 };
 
