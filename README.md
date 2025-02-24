@@ -5,8 +5,6 @@ First, run the development server:
 
 ```ba
 Open [http://localhost:3000](http://localhost:30
- [`next/font`](https://nextjs.asic-features/font-optimization) to timize and load Inter, a custom Google 
-## Leour feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
