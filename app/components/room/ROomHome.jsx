@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 function RoomMain({ data }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
+   console.log("ROomHome received data:", data);
 
   if (data.length == 0) {
     return (

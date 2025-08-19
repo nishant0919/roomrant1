@@ -1,56 +1,66 @@
-"use client";
+"use client"
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { FiSearch } from "react-icons/fi";
 
 function Landing() {
   const router = useRouter();
-  function searchData(e) {
-    router.push("/search/" + e);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [offsetY, setOffsetY] = useState(0);
+
+  const handleScroll = () => setOffsetY(window.scrollY);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search/${searchQuery.trim()}`);
+    }
   }
+
   return (
-    <section className="dark:bg-gray-100 w-full dark:text-gray-800 h-[80vh]  p-8">
-      <div className="flex flex-col justify-center h-full items-center lg:flex-row lg:justify-between">
-        <div
-          className="flex flex-col justify-center text-center rounded-sm 
-        lg:w-1/2
-        w-full
-        h-full
-        lg:text-left"
-        >
-          <h1 className="text-5xl font-bold leading-none sm:text-6xl">
-            Room For
-            <span className="dark:text-violet-600"> Rent</span>
-          </h1>
-          <p className="mt-6 mb-8 text-lg sm:mb-12">
-            Find and rent your perfect room
-            <br className="hidden md:inline lg:hidden" />
-          </p>
-          <div className="flex flex-col space-y-4 sm:items-center sm:justify-center sm:flex-row sm:space-y-0 sm:space-x-4 lg:justify-start">
-            <input
-              type="text"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  searchData(e.target.value);
-                }
-              }}
-              placeholder="Enter an address"
-              className="p-5 w-full rounded-md border border-black outline-none shadow-md"
-            />
-          </div>
-        </div>
-        <div
-          className=" items-center justify-center 
-        lg:w-1/2
-        w-full
-        md:flex
-        hidden
-        "
-        >
-          <img
-            src="https://png.pngtree.com/png-clipart/20230914/original/pngtree-living-room-vector-png-image_12161381.png"
-            alt=""
-            className="object-contain h-[400px] "
+    <section className="relative w-full h-[80vh] flex items-center justify-center p-4 dark:bg-gray-100 dark:text-gray-800 overflow-hidden">
+      <div
+        className="absolute inset-0 z-0 overflow-hidden"
+        style={{ transform: `translateY(${offsetY * 0.4}px)` }}
+      >
+        <img
+          src="/hero-bg.jpg"
+          alt="Modern living room"
+          className="w-full h-full object-cover"
+        />
+        {/* Increased opacity for a less visible image */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+      </div>
+
+      <div className="relative z-10 text-center text-white lg:max-w-3xl px-4">
+        <h1 className="text-5xl font-extrabold leading-tight tracking-wide sm:text-6xl md:text-7xl">
+          Find Your Perfect
+          <span className="text-violet-400"> Room</span>
+        </h1>
+        <p className="mt-6 mb-8 text-lg font-medium sm:text-xl">
+          Search for rooms for rent in your preferred city, neighborhood, or street.
+        </p>
+
+        <form onSubmit={handleSearchSubmit} className="relative mx-auto mt-8 max-w-xl">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by city, neighborhood, or address..."
+            className="w-full pl-6 pr-16 py-4 rounded-full border-2 border-transparent focus:border-violet-600 outline-none text-gray-800 shadow-lg transition-all duration-300"
           />
-        </div>
+          <button
+            type="submit"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-md transition-colors duration-200"
+          >
+            <FiSearch size={24} />
+          </button>
+        </form>
       </div>
     </section>
   );

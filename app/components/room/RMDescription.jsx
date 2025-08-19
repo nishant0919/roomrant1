@@ -1,115 +1,114 @@
+"use client";
+
 import React, { useState } from "react";
-import RMFeatures from "./RMFeatures";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import RMFeatures from "./RMFeatures";
 
-function RMDescription({ router, data, user, id, booked, setActive }) {
+function RMDescription({ router, data, user, id, booked }) {
   const { status } = useSession();
   const [bookLoading, setBookLoading] = useState(false);
   const [unbookLoading, setUnbookLoading] = useState(false);
   const isAuth = status === "authenticated";
 
   const checkifBookedByUser = () => {
-    // Use optional chaining to avoid issues if `booked` or `user` is undefined
     return booked?.find((book) => book?.user?.email === user?.email);
   };
 
-  function bookNow() {
+  async function bookNow() {
     setBookLoading(true);
-    fetch(`/api/booked/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === 200) {
-          alert("Room Booked Successfully");
-          setBookLoading(false);
-          router.refresh();
-        } else {
-          setBookLoading(false);
-          alert("Error Booking Room");
-        }
-      })
-      .catch((err) => {
-        console.error("Error booking the room:", err);
-        setBookLoading(false);
+    try {
+      const res = await fetch(`/api/booked/${id}`);
+      const result = await res.json();
+      if (result.status === 200) {
+        alert("Room Booked Successfully");
+        router.refresh();
+      } else {
         alert("Error Booking Room");
-      });
+      }
+    } catch (err) {
+      console.error("Error booking the room:", err);
+      alert("Error Booking Room");
+    } finally {
+      setBookLoading(false);
+    }
   }
 
-  function unBookNow() {
+  async function unBookNow() {
     setUnbookLoading(true);
-    fetch(`/api/umbook/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === 200) {
-          setUnbookLoading(false);
-          alert("Room Unbooked Successfully");
-          router.refresh();
-        } else {
-          setUnbookLoading(false);
-          alert("Error Unbooking Room");
-        }
-      })
-      .catch((err) => {
-        console.error("Error unbooking the room:", err);
-        setUnbookLoading(false);
+    try {
+      const res = await fetch(`/api/umbook/${id}`);
+      const result = await res.json();
+      if (result.status === 200) {
+        alert("Room Unbooked Successfully");
+        router.refresh();
+      } else {
         alert("Error Unbooking Room");
-      });
+      }
+    } catch (err) {
+      console.error("Error unbooking the room:", err);
+      alert("Error Unbooking Room");
+    } finally {
+      setUnbookLoading(false);
+    }
   }
 
   return (
     <motion.div
-      className="p-2 flex flex-col gap-2"
+      className="p-2 flex flex-col gap-6"
       initial={{ x: 200, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 200, opacity: 0 }}
     >
-      <p>
-        <span className="font-semibold">Description:</span>{" "}
-        {data?.description || "No description available."}
-      </p>
-      <RMFeatures data={data} />
-      {/* Location */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-bold">Location</h3>
+        <h2 className="text-xl font-bold">About this Room</h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          {data?.description || "No description available."}
+        </p>
+      </div>
+
+      <RMFeatures data={data} />
+      
+      <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <p>
-            <span className="font-semibold">Address:</span>{" "}
+          <h3 className="text-lg font-bold">Location</h3>
+          <p className="text-gray-600 dark:text-gray-400">
             {data?.location || "No location provided."}
           </p>
         </div>
-        {/* Book Now Button */}
+
+        {/* Booking & Action Buttons */}
         {isAuth ? (
-          <div className="flex w-full">
-            {(user?.email !== data?.author?.email && (
-              <div className="flex w-full flex-col">
-                {!checkifBookedByUser() ? (
+          <div className="flex flex-col w-full mt-4">
+            {user?.email !== data?.author?.email ? (
+              !checkifBookedByUser() ? (
+                <button
+                  onClick={bookNow}
+                  className="w-full px-6 py-3 text-white bg-violet-600 rounded-md shadow-md hover:bg-violet-700 transition-colors duration-300"
+                  disabled={bookLoading}
+                >
+                  {bookLoading ? "Booking..." : "Book Now"}
+                </button>
+              ) : (
+                <>
                   <button
-                    onClick={bookNow}
-                    className="bg-purple-600 mt-5 w-full hover:bg-purple-700 duration-300 text-white py-2 rounded-md"
-                  >
-                    {bookLoading ? "Booking..." : "Book Now"}
-                  </button>
-                ) : (
-                  <button
-                    className="bg-green-600 mt-5 w-full hover:bg-green-700 duration-300 text-white py-2 rounded-md"
+                    className="w-full px-6 py-3 text-white bg-green-600 rounded-md shadow-md cursor-not-allowed"
                     disabled
                   >
                     Already Booked by You
                   </button>
-                )}
-                {checkifBookedByUser() && (
                   <button
                     onClick={unBookNow}
-                    className="bg-red-600 mt-5 w-full hover:bg-red-700 duration-300 text-white py-2 rounded-md"
+                    className="w-full px-6 py-3 mt-3 text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 transition-colors duration-300"
+                    disabled={unbookLoading}
                   >
                     {unbookLoading ? "Unbooking..." : "Unbook Now"}
                   </button>
-                )}
-              </div>
-            )) || (
+                </>
+              )
+            ) : (
               <button
                 onClick={() => setActive("books")}
-                className="bg-green-600 mt-5 w-full hover:bg-green-700 duration-300 text-white py-2 rounded-md"
+                className="w-full px-6 py-3 text-white bg-violet-600 rounded-md shadow-md hover:bg-violet-700 transition-colors duration-300"
               >
                 View Bookings
               </button>
@@ -118,7 +117,7 @@ function RMDescription({ router, data, user, id, booked, setActive }) {
         ) : (
           <button
             onClick={() => router.push("/login")}
-            className="bg-purple-600 mt-5 hover:bg-purple-700 duration-300 text-white py-2 rounded-md"
+            className="w-full px-6 py-3 text-white bg-violet-600 rounded-md shadow-md hover:bg-violet-700 transition-colors duration-300"
           >
             Login to Book
           </button>
