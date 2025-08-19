@@ -1,3 +1,4 @@
+// app/layout.jsx
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
@@ -15,7 +16,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getServerSession({ authOptions });
+  const session = await getServerSession(authOptions);
   await connectToDatabase();
 
   return (
@@ -27,12 +28,11 @@ export default async function RootLayout({ children }) {
             color="purple"
             height="5"
             showOnScrollUp={true}
-            showOnScrolling={false}
             progressDuration={0.5}
             easingType="easeInOut"
           />
           <Navbar />
-          {children}
+          <main>{children}</main>
         </body>
       </SessionProvider>
     </html>
