@@ -1,13 +1,12 @@
 // app/layout.jsx
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/home/Footer";
 import SessionProvider from "./components/SessionProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import connectToDatabase from "./lib/connect";
 import NextTopLoader from "nextjs-toploader";
+import LayoutWrapper from "./components/LayoutWrapper"; // Import the LayoutWrapper
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,9 +31,9 @@ export default async function RootLayout({ children }) {
             progressDuration={0.5}
             easingType="easeInOut"
           />
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer/>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
         </body>
       </SessionProvider>
     </html>

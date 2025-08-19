@@ -1,6 +1,8 @@
+// app/components/Navbar.jsx
+
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { SiRoadmapdotsh } from "react-icons/si";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -9,31 +11,8 @@ import { IoClose, IoMenu } from "react-icons/io5";
 function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
-  const [role, setRole] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const path = usePathname();
-
-  useEffect(() => {
-    async function fetchRole() {
-      if (auth) {
-        const res = await fetch("/api/user/role");
-        const data = await res.json();
-        setRole(data.role);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-        setRole(null);
-      }
-    }
-    fetchRole();
-  }, [auth]);
-
-  const hideNavbar = path.includes("/admin") && role !== "admin";
-
-  if (hideNavbar) {
-    return null;
-  }
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -87,23 +66,20 @@ function Navbar() {
               </Link>
             ) : (
               <>
-                {!isLoading && (
-                  <>
-                    {role === "user" && (
-                      <Link href={"/add"}>
-                        <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
-                          + Add room
-                        </button>
-                      </Link>
-                    )}
-                    {role === "admin" && (
-                      <Link href={"/admin"}>
-                        <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
-                          Admin
-                        </button>
-                      </Link>
-                    )}
-                  </>
+                {/* The role logic is now in LayoutWrapper, but you might need a simplified version here */}
+                {data?.user?.role === "user" && (
+                  <Link href={"/add"}>
+                    <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
+                      + Add room
+                    </button>
+                  </Link>
+                )}
+                {data?.user?.role === "admin" && (
+                  <Link href={"/admin"}>
+                    <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
+                      Admin
+                    </button>
+                  </Link>
                 )}
                 <Link href={"/user"}>
                   <img
@@ -156,7 +132,6 @@ function Navbar() {
         </nav>
       </header>
 
-      {/* Embedded CSS for the underline animation */}
       <style jsx>{`
         @keyframes underline-grow {
           from {

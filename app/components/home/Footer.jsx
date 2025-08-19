@@ -3,7 +3,7 @@ import { SiRoadmapdotsh } from "react-icons/si";
 
 function Footer() {
   return (
-    <footer className="px-4 py-8  bg-purple-200">
+    <footer className="px-4 py-8 bg-purple-200">
       <div className="container flex flex-wrap items-center justify-center mx-auto space-y-4 sm:justify-between sm:space-y-0">
         <div className="flex flex-row pr-3 space-x-4 sm:space-x-8">
           <SiRoadmapdotsh size={40} />
@@ -25,7 +25,7 @@ function Footer() {
             <a rel="noopener noreferrer" href="#">
               Join
             </a>
-          </li>
+            </li>
           <li>
             <a rel="noopener noreferrer" href="#">
               Post a Room
