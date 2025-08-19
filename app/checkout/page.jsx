@@ -1,11 +1,10 @@
-// File: app/checkout/page.jsx
-
-"use client";
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import KhaltiCheckout from 'khalti-checkout-web';
+// Remove the client-side Khalti library import
+// import KhaltiCheckout from 'khalti-checkout-web';
 
 function CheckoutPage() {
     const router = useRouter();
@@ -48,56 +47,34 @@ function CheckoutPage() {
     const handleKhaltiPayment = async () => {
         setPaymentLoading(true);
         try {
+            // Step 1: Initiate payment via your server API
             const res = await fetch('/api/khalti/initiate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orderId: roomId,
-                    amount: roomData?.rent, // This is now correctly accessed
+                    amount: roomData?.rent,
                     customer: {
                         name: user?.name,
                         email: user?.email,
                         phone: user?.phone || '98XXXXXXXX',
-                    }
+                    },
                 }),
             });
+
             const paymentData = await res.json();
-            if (!paymentData.pidx) {
-                throw new Error("Failed to initiate Khalti payment.");
+            
+            // Check for success and a payment URL from the server response
+            if (paymentData.payment_url) {
+                // Step 2: Redirect the user to Khalti's payment page
+                window.location.href = paymentData.payment_url;
+            } else {
+                // If no URL is returned, something went wrong on the server
+                throw new Error(paymentData.error || "Failed to initiate Khalti payment.");
             }
-            const config = {
-                "publicKey": process.env.NEXT_PUBLIC_KHALTI_PUBLIC_KEY,
-                "paymentPreference": ["KHALTI"],
-                "productIdentity": roomId,
-                "productName": roomData?.title || "Room Booking",
-                "productUrl": window.location.href,
-                "eventHandler": {
-                    async onSuccess(payload) {
-                        const verifyRes = await fetch('/api/khalti/verify', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ pidx: payload.pidx, orderId: roomId }),
-                        });
-                        const verifyResult = await verifyRes.json();
-                        if (verifyResult.success) {
-                            alert("Payment successful! Room booked.");
-                            router.push(`/room/${roomId}`);
-                        } else {
-                            alert("Payment verification failed. Please contact support.");
-                        }
-                    },
-                    onError(error) {
-                        console.error("Khalti payment error:", error);
-                        alert("Payment failed! Please try again.");
-                    },
-                },
-            };
-            const checkout = new KhaltiCheckout(config);
-            checkout.show({ amount: roomData?.rent * 100 });
         } catch (err) {
             console.error("Error initiating payment:", err);
-            alert("Error processing payment.");
-        } finally {
+            alert(`Error processing payment: ${err.message}`);
             setPaymentLoading(false);
         }
     };

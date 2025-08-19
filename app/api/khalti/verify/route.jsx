@@ -1,7 +1,7 @@
 // File: app/api/khalti/verify/route.js
 
-import dbConnect from '@/lib/mongodb';
-import Order from '@/models/Order';
+import connectToDatabase from '@/app/lib/connect';
+import Order from '@/app/lib/schema/Order';
 import { NextResponse } from 'next/server';
 
 const corsHeaders = {
@@ -16,7 +16,7 @@ export async function OPTIONS() {
 
 export async function POST(req) {
   console.log('Received request for Khalti verification API.');
-  await dbConnect();
+  await connectToDatabase();
   try {
     const { pidx, orderId } = await req.json();
 
