@@ -1,10 +1,15 @@
+// app/components/home/RecentCards.jsx
+
 import React from "react";
 import Cards from "../Cards";
 
 function RecentCards({ data }) {
+  // Add console logs to inspect the data prop
+  console.log("RecentCards received data:", data);
+  console.log("Data length:", data.length);
+
   // Check if data is a valid array and not empty
   if (!Array.isArray(data) || data.length === 0) {
-    // Optionally, you can return a message or null if there's no data
     return (
       <div className="flex flex-col gap-5 p-4 pt-10 text-center text-gray-500">
         <h2 className="text-4xl pl-8">
@@ -14,6 +19,18 @@ function RecentCards({ data }) {
       </div>
     );
   }
+
+  // Debugging the filtering loop
+  const approvedRooms = data.slice(0, 6).filter(room => {
+    // Check each room's approved status
+    const isApproved = room.approved === true;
+    console.log(`Checking room with _id: ${room._id}, approved status: ${room.approved}, is boolean true?: ${isApproved}`);
+    return isApproved;
+  });
+
+  console.log("Filtered Approved Rooms:", approvedRooms);
+  console.log("Approved Rooms Count:", approvedRooms.length);
+
 
   return (
     <div className="flex flex-col gap-5 p-4 pt-10">
@@ -34,12 +51,9 @@ function RecentCards({ data }) {
         p-4
       "
       >
-        {data
-          .slice(0, 6)
-          .map(
-            (room, index) =>
-              room.approved === true && <Cards key={index} data={room} />
-          )}
+        {approvedRooms.map((room, index) => (
+          <Cards key={index} data={room} />
+        ))}
       </div>
     </div>
   );

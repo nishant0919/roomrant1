@@ -2,127 +2,175 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { SiRoadmapdotsh } from "react-icons/si";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { IoClose, IoMenu } from "react-icons/io5";
 
 function Navbar() {
   const { data, status } = useSession();
   const auth = status === "authenticated";
   const [role, setRole] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  if (status === "loading") return null;
-
-  async function fetchRole() {
-    const res = await fetch("/api/user/role");
-    const data = await res.json();
-    setRole(data.role);
-    setIsLoading(false);
-  }
-
-  useEffect(() => {
-    if (auth) {
-      fetchRole();
-    }
-  }, [auth]);
-
-  const [hideNavbar, setHideNavbar] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const path = usePathname();
 
   useEffect(() => {
-    if (path.includes("/admin")) {
-      if (role !== "admin") {
-        setHideNavbar(true);
-        return;
+    async function fetchRole() {
+      if (auth) {
+        const res = await fetch("/api/user/role");
+        const data = await res.json();
+        setRole(data.role);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        setRole(null);
       }
-      setHideNavbar(true);
-    } else {
-      setHideNavbar(false);
     }
-  }, [path]);
+    fetchRole();
+  }, [auth]);
+
+  const hideNavbar = path.includes("/admin") && role !== "admin";
 
   if (hideNavbar) {
     return null;
   }
 
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Rooms", href: "/rooms" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
+
   return (
-    <header className="p-4 dark:bg-gray-100 dark:text-gray-800">
-      <div className="container flex justify-between h-16 mx-auto">
-        <div className="flex">
-          <Link
-            rel="noopener noreferrer"
-            href={"/"}
-            aria-label="Back to homepage"
-            className="flex items-center p-2"
-          >
-            <SiRoadmapdotsh size={40} />
+    <>
+      <header className="fixed w-full top-0 left-0 z-50 bg-white shadow-md dark:bg-gray-900 dark:text-gray-50">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo and QuickRoom text */}
+          <Link href={"/"} className="flex items-center gap-2">
+            <SiRoadmapdotsh size={32} className="text-violet-600" />
+            <span className="text-xl font-bold tracking-tight">QuickRoom</span>
           </Link>
-        </div>
-        {(!auth && (
-          <div className="items-center flex-shrink-0 hidden lg:flex">
-            <Link href={"/login"}>
-              <button className="px-8 py-3 font-semibold rounded dark:bg-violet-600 dark:text-gray-50">
-                Log in
-              </button>
-            </Link>
-          </div>
-        )) || (
-          <div className="items-center flex-shrink-0 gap-4 hidden lg:flex">
-            {(!isLoading && (
-              <div className="flex">
-                {(role === "user" && (
-                  <Link href={"/add"}>
-                    <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                      {" "}
-                      + Add room
-                    </button>
+
+          {/* Desktop Navigation Menus (centered) */}
+          <nav className="hidden lg:flex flex-grow justify-center">
+            <ul className="flex items-center gap-8">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className={`relative text-lg font-medium transition-colors hover:text-violet-600 ${
+                      path === link.href ? "text-violet-600" : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
+                    {link.name}
+                    {path === link.href && (
+                      <span className="absolute left-0 bottom-[-5px] h-0.5 w-full bg-violet-600 rounded-full animate-underline-grow"></span>
+                    )}
                   </Link>
-                )) || (
-                  <Link href={"/admin"}>
-                    <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                      Admin
-                    </button>
-                  </Link>
-                )}
-              </div>
-            )) || (
-              <button className="px-8 py-2 bg-black text-white hover:bg-red-400 hover:text-black hover:duration-200 rounded-md">
-                {" "}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Auth/User Section */}
+          <div className="flex items-center gap-4">
+            {status === "loading" ? (
+              <div className="px-6 py-2 bg-gray-200 text-gray-700 rounded-md animate-pulse">
                 Loading...
-              </button>
+              </div>
+            ) : !auth ? (
+              <Link href={"/login"}>
+                <button className="px-6 py-2 font-semibold rounded-md bg-violet-600 text-white transition-transform hover:scale-105">
+                  Log in
+                </button>
+              </Link>
+            ) : (
+              <>
+                {!isLoading && (
+                  <>
+                    {role === "user" && (
+                      <Link href={"/add"}>
+                        <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
+                          + Add room
+                        </button>
+                      </Link>
+                    )}
+                    {role === "admin" && (
+                      <Link href={"/admin"}>
+                        <button className="px-6 py-2 bg-black text-white hover:bg-violet-600 hover:text-white transition-colors rounded-md">
+                          Admin
+                        </button>
+                      </Link>
+                    )}
+                  </>
+                )}
+                <Link href={"/user"}>
+                  <img
+                    src={data?.user?.image || "https://www.gravatar.com/avatar/?d=mp"}
+                    className="h-10 w-10 rounded-full ring-2 ring-violet-600"
+                    alt="User Profile"
+                    referrerPolicy="no-referrer"
+                  />
+                </Link>
+              </>
             )}
-            <Link
-              href={"/user"}
-              className="flex items-center p-2"
-              rel="noopener noreferrer"
+
+            {/* Mobile menu toggle button */}
+            <button
+              className="lg:hidden p-2 text-gray-800 dark:text-gray-200"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <img
-                src={data?.user?.image}
-                className="h-10 w-10 rounded-full"
-                alt=""
-                referrerPolicy="no-referrer"
-              />
-            </Link>
+              {isMobileMenuOpen ? (
+                <IoClose size={28} />
+              ) : (
+                <IoMenu size={28} />
+              )}
+            </button>
           </div>
-        )}
-        <button className="p-4 lg:hidden">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-6 h-6 dark:text-gray-800"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </button>
-      </div>
-    </header>
+        </div>
+
+        {/* Mobile Menu */}
+        <nav
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          } bg-white dark:bg-gray-900 shadow-md`}
+        >
+          <ul className="flex flex-col items-start gap-4 p-4">
+            {navLinks.map((link) => (
+              <li key={link.name} className="w-full">
+                <Link
+                  href={link.href}
+                  className={`block w-full p-2 text-lg rounded-md transition-colors ${
+                    path === link.href
+                      ? "text-violet-600 bg-violet-100 dark:bg-violet-800"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
+      {/* Embedded CSS for the underline animation */}
+      <style jsx>{`
+        @keyframes underline-grow {
+          from {
+            width: 0;
+          }
+          to {
+            width: 100%;
+          }
+        }
+        .animate-underline-grow {
+          animation: underline-grow 0.3s forwards;
+        }
+      `}</style>
+    </>
   );
 }
 
