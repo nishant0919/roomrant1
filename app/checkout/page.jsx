@@ -53,7 +53,7 @@ function CheckoutPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     orderId: roomId,
-                    amount: roomData?.price, // This is now correctly accessed
+                    amount: roomData?.rent, // This is now correctly accessed
                     customer: {
                         name: user?.name,
                         email: user?.email,
@@ -93,7 +93,7 @@ function CheckoutPage() {
                 },
             };
             const checkout = new KhaltiCheckout(config);
-            checkout.show({ amount: roomData?.price * 100 });
+            checkout.show({ amount: roomData?.rent * 100 });
         } catch (err) {
             console.error("Error initiating payment:", err);
             alert("Error processing payment.");
@@ -124,7 +124,7 @@ function CheckoutPage() {
                 )}
                 <h2 className="text-xl font-semibold">{roomData.title}</h2>
                 <p className="text-gray-600 dark:text-gray-400">Location: {roomData.location}</p>
-                <p className="text-lg font-bold mt-2">Price: Rs. {roomData.price} / month</p>
+                <p className="text-lg font-bold mt-2">Price: Rs. {roomData.rent} / month</p>
             </div>
             <p className="mb-4 text-gray-700 dark:text-gray-300">
                 You are about to book this room. Click "Pay Now" to complete your booking securely via Khalti.
@@ -134,7 +134,7 @@ function CheckoutPage() {
                 className="w-full px-6 py-3 text-white bg-green-600 rounded-md shadow-md hover:bg-green-700 transition-colors duration-300"
                 disabled={paymentLoading || !roomData}
             >
-                {paymentLoading ? "Redirecting to Khalti..." : `Pay Now (Rs. ${roomData.price || 0})`}
+                {paymentLoading ? "Redirecting to Khalti..." : `Pay Now (Rs. ${roomData.rent || 0})`}
             </button>
         </div>
     );
