@@ -1,8 +1,16 @@
+// File: app/lib/schema/roomSchema.js
+
 import { Mongoose, models, model } from "mongoose";
 import { Schema } from "mongoose";
 
 const roomSchema = new Schema(
   {
+    // ADD THIS LINE:
+    title: {
+      type: String,
+      required: true,
+    },
+    // Rest of your schema...
     image: {
       type: String,
     },

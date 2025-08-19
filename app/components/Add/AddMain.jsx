@@ -1,4 +1,4 @@
-// app/components/add/AddMain.jsx
+// File: app/components/add/AddMain.jsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -69,8 +69,10 @@ const AddMain = () => {
       setUploading(false);
       return;
     }
-    if (!userData.description || !userData.rent || !userData.location || !userData.type || !userData.features || userData.features.length === 0) {
-      alert("All fields are required.");
+
+    // Updated check to include the 'title' field
+    if (!userData.title || !userData.description || !userData.rent || !userData.location || !userData.type || !userData.features || userData.features.length === 0) {
+      alert("All fields are required, including the Room Title.");
       setUploading(false);
       return;
     }
@@ -80,7 +82,7 @@ const AddMain = () => {
       setUploading(false);
       return;
     }
-    
+
     setUploadingStatus("Finalizing data upload...");
 
     try {
@@ -93,7 +95,7 @@ const AddMain = () => {
         body: JSON.stringify(sendData),
       });
       const data = await res.json();
-      
+
       if (res.ok) {
         setUploadingStatus("Room added successfully! Redirecting...");
         setTimeout(() => {
@@ -173,7 +175,21 @@ const AddMain = () => {
             />
           </div>
 
-          {/* Form Fields */}
+          {/* New Field: Room Title - THIS IS THE FIX */}
+          <div className="flex flex-col md:col-span-2">
+            <label htmlFor="title" className="text-sm font-medium text-gray-700">Room Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              onChange={handleChange}
+              placeholder="e.g., Cozy Single Room in Central Birtamod"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          {/* Rest of your form fields */}
           <div className="flex flex-col">
             <label htmlFor="description" className="text-sm font-medium text-gray-700">Description</label>
             <textarea
@@ -262,7 +278,7 @@ const AddMain = () => {
           )}
         </button>
       </form>
-      
+
     </div>
   );
 };
