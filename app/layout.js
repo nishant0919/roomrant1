@@ -23,7 +23,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <body className={inter.className}>
+        <body className={`${inter.className} flex flex-col min-h-screen`}>
           <NextTopLoader
             showSpinner={false}
             color="purple"
@@ -33,9 +33,9 @@ export default async function RootLayout({ children }) {
             easingType="easeInOut"
           />
           <Navbar />
-          <main>{children}</main>
+          <main className="flex-grow">{children}</main>
+          <Footer/>
         </body>
-        <Footer/>
       </SessionProvider>
     </html>
   );
