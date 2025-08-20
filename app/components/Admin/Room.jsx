@@ -136,8 +136,8 @@ function AdminRoomPage() {
               <p className="text-gray-600 text-sm mt-2">{room.description}</p>
               <div className="flex items-center mt-4 text-sm text-gray-500">
                 <div className="flex items-center ml-4">
-                  <FaTag className="mr-1" />
-                  <span>Rs.{room.rent} per night</span>
+                  <FaTag className="mr-1 text-emerald-600" />
+                  <span className="font-semibold">₹{Number(room.rent).toLocaleString('en-IN')} per month</span>
                 </div>
               </div>
               <div className="flex items-center mt-2 text-sm text-gray-500">
@@ -189,9 +189,10 @@ function AdminRoomPage() {
               }}
             />
             <p className="text-gray-600">{selectedRoom.description}</p>
-            <p className="text-lg font-semibold mt-2">
+            <p className="text-lg font-semibold mt-2 flex items-center gap-2">
               Price:{" "}
-              <span className="text-gray-500">Rs.{selectedRoom.rent}</span>
+              <span className="text-emerald-600 font-bold">₹{Number(selectedRoom.rent).toLocaleString('en-IN')}</span>
+              <span className="text-sm text-gray-500">per month</span>
             </p>
             <p className="text-lg font-semibold mt-2">
               Location:{" "}

@@ -55,10 +55,20 @@ export default async function Home() {
 
   // Pass the rooms array and stats object directly to the components
   return (
-    <div>
+    <div className="min-h-screen">
       <Landing />
-      {roomsData.rooms && roomsData.rooms.length > 0 && <RecentCards data={roomsData.rooms} />}
-      {statsData.stats && <Stats data={statsData.stats} />}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {roomsData.rooms && roomsData.rooms.length > 0 && (
+          <div className="py-8">
+            <RecentCards data={roomsData.rooms} />
+          </div>
+        )}
+        {statsData.stats && (
+          <div className="py-8">
+            <Stats data={statsData.stats} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

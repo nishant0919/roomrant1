@@ -44,12 +44,12 @@ function Navbar() {
 
   return (
     <>
-      <header className="fixed w-full top-0 left-0 z-50 bg-white shadow-md dark:bg-gray-900 dark:text-gray-50">
+      <header className="fixed w-full top-0 left-0 z-50 bg-white shadow-sm border-b border-gray-100 dark:bg-gray-900 dark:border-gray-800 dark:text-gray-50">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo and QuickRoom text */}
-          <Link href={"/"} className="flex items-center gap-2">
-            <SiRoadmapdotsh size={32} className="text-violet-600" />
-            <span className="text-xl font-bold tracking-tight">QuickRoom</span>
+          <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <SiRoadmapdotsh size={24} className="text-blue-600" />
+            <span className="text-xl font-bold text-gray-800 dark:text-white">QuickRoom</span>
           </Link>
 
           {/* Desktop Navigation Menus (centered) */}
@@ -59,13 +59,13 @@ function Navbar() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className={`relative text-lg font-medium transition-colors hover:text-violet-600 ${
-                      path === link.href ? "text-violet-600" : "text-gray-700 dark:text-gray-300"
+                    className={`relative text-base font-medium transition-colors hover:text-blue-600 ${
+                      path === link.href ? "text-blue-600" : "text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {link.name}
                     {path === link.href && (
-                      <span className="absolute left-0 bottom-[-5px] h-0.5 w-full bg-violet-600 rounded-full animate-underline-grow"></span>
+                      <span className="absolute left-0 bottom-[-5px] h-0.5 w-full bg-blue-600 rounded-full animate-underline-grow"></span>
                     )}
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ function Navbar() {
               </div>
             ) : !auth ? (
               <Link href={"/login"}>
-                <button className="px-6 py-2 font-semibold rounded-md bg-violet-600 text-white transition-transform hover:scale-105">
+                <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
                   Log in
                 </button>
               </Link>
@@ -108,7 +108,7 @@ function Navbar() {
                 <Link href={"/user"}>
                   <img
                     src={data?.user?.image || "https://www.gravatar.com/avatar/?d=mp"}
-                    className="h-10 w-10 rounded-full ring-2 ring-violet-600"
+                    className="h-9 w-9 rounded-full ring-2 ring-blue-600"
                     alt="User Profile"
                     referrerPolicy="no-referrer"
                   />
@@ -141,9 +141,9 @@ function Navbar() {
               <li key={link.name} className="w-full">
                 <Link
                   href={link.href}
-                  className={`block w-full p-2 text-lg rounded-md transition-colors ${
+                  className={`block w-full p-2 text-base rounded-md transition-colors ${
                     path === link.href
-                      ? "text-violet-600 bg-violet-100 dark:bg-violet-800"
+                      ? "text-blue-600 bg-blue-50 dark:bg-blue-900"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
