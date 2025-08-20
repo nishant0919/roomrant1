@@ -22,13 +22,14 @@ export async function POST(req) {
         const session = await getServerSession(authOptions);
         const userId = session?.user?.id;
 
-        const { roomId, amount } = await req.json();
+        const { roomId, amount, customer } = await req.json();
 
         // Use the room ID as the order's primary key for easy lookup later
         const newOrder = await Order.create({
-            _id: roomId, // 💡 Use roomId as _id for direct linking
+            _id: roomId, // Use roomId as _id for direct linking
             roomId: roomId,
             user: userId || null, // Assuming userId is a valid ObjectId
+            customer: customer, // 💡 Add the customer object here
             amount: amount,
             paymentStatus: 'pending',
         });

@@ -1,4 +1,4 @@
-// File: models/Order.js
+// File: app/lib/schema/Order.js
 
 import mongoose from 'mongoose';
 
@@ -20,6 +20,24 @@ const OrderSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User', // Assumes a 'User' model exists
             required: true,
+        },
+        customer: {
+            name: {
+                type: String,
+                required: true,
+            },
+            email: {
+                type: String,
+                required: true,
+            },
+            phone: {
+                type: String,
+                required: true,
+            },
+            address: {
+                type: String,
+                required: true,
+            },
         },
         amount: {
             type: Number,
