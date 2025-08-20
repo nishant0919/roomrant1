@@ -2,6 +2,7 @@
 import React from "react";
 import Room from "@/app/components/Admin/Room";
 import UserDetail from "@/app/components/Admin/Users";
+import AdminOrdersPage from "../orders/page";
 
 function Compo({ option }) {
   const [loading, setLoading] = React.useState(true);
@@ -35,6 +36,8 @@ function Compo({ option }) {
     <div className="w-full">
       {option === "room" && <Room />}
       {option === "users" && <UserDetail />}
+      {option === "orders" && <AdminOrdersPage/>}
+
     </div>
   );
 }

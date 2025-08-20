@@ -18,8 +18,8 @@ const OrderSchema = new mongoose.Schema(
         user: {
             // Reference to the authenticated user
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User', // Assumes a 'User' model exists
-            required: true,
+            ref: 'User',
+            required: false, // 💡 This field is now optional
         },
         customer: {
             name: {

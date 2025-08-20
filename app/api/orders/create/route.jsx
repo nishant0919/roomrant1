@@ -3,8 +3,9 @@
 import connectToDatabase from '@/app/lib/connect';
 import Order from '@/app/lib/schema/Order';
 import { NextResponse } from 'next/server';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth"; // 💡 This is no longer used, but kept for context
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // 💡 This is no longer used, but kept for context
+
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -19,17 +20,17 @@ export async function OPTIONS() {
 export async function POST(req) {
     await connectToDatabase();
     try {
-        const session = await getServerSession(authOptions);
-        const userId = session?.user?.id;
+        // 💡 The user session logic is removed to allow orders without a userId
+        // const session = await getServerSession(authOptions);
+        // const userId = session?.user?.id;
 
         const { roomId, amount, customer } = await req.json();
 
-        // Use the room ID as the order's primary key for easy lookup later
         const newOrder = await Order.create({
-            _id: roomId, // Use roomId as _id for direct linking
+            _id: roomId,
             roomId: roomId,
-            user: userId || null, // Assuming userId is a valid ObjectId
-            customer: customer, // 💡 Add the customer object here
+            user: null, // 💡 The user field is now explicitly set to null
+            customer: customer,
             amount: amount,
             paymentStatus: 'pending',
         });
